@@ -47,7 +47,12 @@ public class CartService {
     }
 
     public List<CartItem> getCart(Long buyerId) {
-        Cart cart = cartRepo.findByBuyerId(buyerId).orElseThrow();
+        Cart cart = cartRepo.findByBuyerId(buyerId)
+                .orElseGet(() -> {
+                    Cart c = new Cart();
+                    c.setBuyerId(buyerId);
+                    return cartRepo.save(c);
+                });
         return cartItemRepo.findByCartId(cart.getId());
     }
 

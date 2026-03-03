@@ -11,24 +11,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/buyer/address")
+@RequestMapping({"/buyer/address", "/buyer/addresses"})
 public class AddressController {
 
     @Autowired
     private AddressService service;
 
-    @PostMapping
+    @PostMapping({"", "/", "/add"})
     public String add(@AuthenticationPrincipal CustomUserDetails user,
                       @RequestBody AddressDTO dto) {
         return service.add(user.getUser().getId(), dto);
     }
 
-    @GetMapping
+    @GetMapping({"", "/", "/list"})
     public List<Address> list(@AuthenticationPrincipal CustomUserDetails user) {
         return service.list(user.getUser().getId());
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}")
+    public String update(@AuthenticationPrincipal CustomUserDetails user,
+                         @PathVariable Long id,
+                         @RequestBody AddressDTO dto) {
+        return service.update(user.getUser().getId(), id, dto);
+    }
+
+    @PutMapping("/update")
+    public String updateAlt(@AuthenticationPrincipal CustomUserDetails user,
+                            @RequestParam Long id,
+                            @RequestBody AddressDTO dto) {
+        return service.update(user.getUser().getId(), id, dto);
+    }
+
+    @DeleteMapping({"/{id}", "/remove/{id}"})
     public String delete(@PathVariable Long id) {
         return service.delete(id);
     }

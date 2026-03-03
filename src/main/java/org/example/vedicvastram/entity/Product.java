@@ -3,6 +3,8 @@ package org.example.vedicvastram.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "products")
@@ -27,4 +29,7 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status; // PENDING, APPROVED, REJECTED
+
+    @Transient
+    private List<String> imageUrls;
 }

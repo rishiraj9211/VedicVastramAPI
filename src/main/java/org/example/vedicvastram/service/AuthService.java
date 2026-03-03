@@ -3,6 +3,7 @@ package org.example.vedicvastram.service;
 import org.example.vedicvastram.dto.LoginRequest;
 import org.example.vedicvastram.dto.RegisterRequest;
 import org.example.vedicvastram.entity.User;
+import org.example.vedicvastram.entity.UserRole;
 import org.example.vedicvastram.entity.UserStatus;
 import org.example.vedicvastram.respository.UserRepository;
 import org.example.vedicvastram.util.JwtUtil;
@@ -31,20 +32,28 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(request.getRole());
-        user.setStatus(UserStatus.PENDING);
+        if (request.getRole() == UserRole.SELLER) {
+            user.setStatus(UserStatus.PENDING);
+        } else {
+            user.setStatus(UserStatus.APPROVED);
+        }
         user.setCreatedAt(LocalDateTime.now());
 
         repo.save(user);
-        return "Registration successful. Awaiting Admin Approval.";
+        return "Registration successful.";
     }
 
     public String login(LoginRequest request) {
         User user = repo.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid Email"));
 
-//        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-//            throw new RuntimeException("Invalid Password");
-//        }
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid Password");
+        }
+
+        if (user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.REJECTED) {
+            throw new RuntimeException("User not approved");
+        }
 
         return jwtUtil.generateToken(user.getEmail(), user.getRole().name());
     }

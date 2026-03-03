@@ -21,6 +21,16 @@ public class User {
 
     private String password;
 
+    private String phone;
+    private String addressLine;
+    private String city;
+    private String state;
+    private String pincode;
+
+    // Seller specific
+    private String storeName;
+    private String gst;
+
     @Enumerated(EnumType.STRING)
     private UserRole role; // ADMIN, SELLER, BUYER
 
@@ -30,4 +40,3 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }
-

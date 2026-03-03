@@ -1,5 +1,9 @@
 package org.example.vedicvastram.entity;
 
 public enum OrderStatus {
-    PLACED, SHIPPED, DELIVERED
+    PLACED,
+    CONFIRMED,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED
 }

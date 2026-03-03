@@ -17,11 +17,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByStatus(ProductStatus status);
 
     @Query("SELECT p FROM Product p WHERE "
+            + "(:status IS NULL OR p.status = :status) AND "
             + "(:brand IS NULL OR p.brand = :brand) AND "
             + "(:color IS NULL OR p.color = :color) AND "
             + "(:fabric IS NULL OR p.fabric = :fabric) AND "
             + "(:size IS NULL OR p.availableSizes LIKE %:size%)")
     List<Product> filterProducts(
+            @Param("status") ProductStatus status,
             @Param("brand") String brand,
             @Param("color") String color,
             @Param("fabric") String fabric,

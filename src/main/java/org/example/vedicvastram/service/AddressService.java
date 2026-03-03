@@ -31,6 +31,21 @@ public class AddressService {
         return repo.findByBuyerId(buyerId);
     }
 
+    public String update(Long buyerId, Long id, AddressDTO dto) {
+        Address address = repo.findById(id).orElseThrow();
+        if (!address.getBuyerId().equals(buyerId)) {
+            throw new RuntimeException("Not allowed to update this address");
+        }
+        address.setFullName(dto.getFullName());
+        address.setPhone(dto.getPhone());
+        address.setAddressLine(dto.getAddressLine());
+        address.setCity(dto.getCity());
+        address.setState(dto.getState());
+        address.setPincode(dto.getPincode());
+        repo.save(address);
+        return "Address updated.";
+    }
+
     public String delete(Long id) {
         repo.deleteById(id);
         return "Address removed.";
